@@ -2,7 +2,7 @@
 Retinaface face detector in cpp and python using ncnn
 
 Features:
- * You can select retinaface R50 model for face detection
+ * Added support to select retinaface R50 model for face detection in python
  
 ## Build retinaface ncnn cpp
 
