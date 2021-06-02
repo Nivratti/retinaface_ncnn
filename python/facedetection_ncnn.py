@@ -1,10 +1,13 @@
+"""
+Usage: 
+python facedetection_ncnn.py   "path/to/image"
+"""
 import sys
 import cv2
 import numpy as np
 import ncnn
-# from ncnn.model_zoo import get_model
 from ncnn.utils import draw_faceobjects
-
+from retinaface import RetinaFace
 
 class FaceDetectionRTncnn:
     def __init__(self, prob_threshold=0.8, nms_threshold=0.4, num_threads=4, use_gpu=False, model="resnet50"):
@@ -51,10 +54,10 @@ class FaceDetectionRTncnn:
         if max_faces <= 0 or max_faces >=2:
             face_boxes = []
             for idx, obj in enumerate(faceobjects, start=1):
-                print(f"obj.rect.x: {obj.rect.x}")
-                print(f"obj.rect.y: {obj.rect.y}")
-                print(f"obj.rect.w: {obj.rect.w}")
-                print(f"obj.rect.h: {obj.rect.h}")
+                # print(f"obj.rect.x: {obj.rect.x}")
+                # print(f"obj.rect.y: {obj.rect.y}")
+                # print(f"obj.rect.w: {obj.rect.w}")
+                # print(f"obj.rect.h: {obj.rect.h}")
 
                 bbox = _get_box(obj, return_boxformat="xywh")
                 face_boxes.append(bbox)
@@ -70,10 +73,15 @@ class FaceDetectionRTncnn:
 
 
 def main():
-    # from ncnn.utils import draw_faceobjects
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Face detection using retinaface ncnn.')
+    parser.add_argument('image', type=str, help='Image path')
+    args = parser.parse_args()
+
     face_detector = FaceDetectionRTncnn(use_gpu=True)
     
-    imagepath = "/content/human.png"
+    imagepath = args.image
 
     img_bgr = cv2.imread(imagepath)
     if img_bgr is None:
@@ -83,7 +91,7 @@ def main():
     face_boxes = face_detector.get_face_bbox(
         img_bgr, max_faces=2,
         return_boxformat="xywh",
-        is_draw_faceobjects=False
+        is_draw_faceobjects=True
     )
     print(f"\nface_boxes: {face_boxes}")
 
